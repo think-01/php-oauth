@@ -6,7 +6,6 @@ use OAuth\Common\Consumer\Credentials;
 
 class CredentialsTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @covers OAuth\Common\Consumer\Credentials::__construct
      */

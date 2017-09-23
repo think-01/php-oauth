@@ -18,7 +18,6 @@ use OAuth\UserData\Extractor\GitHub;
  */
 class GitHubTest extends \PHPUnit_Framework_TestCase
 {
-
     const PROFILE_RESPONSE =
         '{
           "login": "octocat",
@@ -110,7 +109,7 @@ class GitHubTest extends \PHPUnit_Framework_TestCase
         $service->expects($this->any())
             ->method('requestJSON')
             ->with(GitHub::REQUEST_PROFILE)
-            ->willReturn(json_decode(GitHubTest::PROFILE_RESPONSE, true));
+            ->willReturn(json_decode(GitHubTest::PROFILE_RESPONSE, TRUE));
 
         /**
          * @var \OAuth\Common\Service\ServiceInterface $service
@@ -216,7 +215,6 @@ class GitHubTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param string $returnValue
-     *
      * @return \OAuth\Common\Service\ServiceInterface
      */
     private function getEmailTestMock($returnValue)
@@ -228,7 +226,7 @@ class GitHubTest extends \PHPUnit_Framework_TestCase
         $service->expects($this->any())
             ->method('requestJSON')
             ->with(GitHub::REQUEST_EMAIL, [], 'GET')
-            ->willReturn(json_decode($returnValue, true));
+            ->willReturn(json_decode($returnValue, TRUE));
 
         return $service;
     }

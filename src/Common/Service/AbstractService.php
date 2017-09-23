@@ -17,221 +17,219 @@ use OAuth\UserData\ExtractorFactoryInterface;
 /**
  * Abstract OAuth service, version-agnostic
  */
-abstract class AbstractService implements ServiceInterface
-{
+abstract class AbstractService implements ServiceInterface {
 
-    /** @var Credentials */
-    protected $credentials;
+	/** @var Credentials */
+	protected $credentials;
 
-    /** @var Browser */
-    protected $httpTransporter;
+	/** @var Browser */
+	protected $httpTransporter;
 
-    /** @var TokenStorageInterface */
-    protected $storage;
+	/** @var TokenStorageInterface */
+	protected $storage;
 
-    /** @var Url|null */
-    protected $baseApiUri;
+	/** @var Url|null */
+	protected $baseApiUri;
 
-    /** @var string */
-    protected $authorizationEndpoint = '';
+	/** @var string */
+	protected $authorizationEndpoint = '';
 
-    /** @var string */
-    protected $accessTokenEndpoint = '';
+	/** @var string */
+	protected $accessTokenEndpoint = '';
 
-    /** @var ExtractorFactory */
-    protected static $extractorFactory;
+	/** @var ExtractorFactory */
+	protected static $extractorFactory;
 
-    /**
-     * @param CredentialsInterface $credentials
-     * @param Browser $httpTransporter
-     * @param TokenStorageInterface $storage
-     * @param $baseApiUrl
-     */
-    public function __construct(
-        CredentialsInterface $credentials,
-        Browser $httpTransporter,
-        TokenStorageInterface $storage,
-        $baseApiUrl
-    ) {
-        $this->credentials = $credentials;
-        $this->httpTransporter = $httpTransporter;
-        $this->storage = $storage;
+	public function getTransporter()
+	{
+		return $this->httpTransporter;
+	}
 
-        if ($baseApiUrl) {
-            $this->baseApiUri = new Url($baseApiUrl);
-        } elseif (is_string($this->baseApiUri)) {
-            $this->baseApiUri = new Url($this->baseApiUri);
-        }
+	/**
+	 * @param CredentialsInterface $credentials
+	 * @param Browser $httpTransporter
+	 * @param TokenStorageInterface $storage
+	 * @param $baseApiUrl
+	 */
+	public function __construct(
+		CredentialsInterface $credentials,
+		Browser $httpTransporter,
+		TokenStorageInterface $storage,
+		$baseApiUrl
+	)
+	{
+		$this->credentials     = $credentials;
+		$this->httpTransporter = $httpTransporter;
+		$this->storage         = $storage;
 
-        $this->initialize();
-    }
+		if ($baseApiUrl) $this->baseApiUri = new Url($baseApiUrl);
+		elseif (is_string($this->baseApiUri)) $this->baseApiUri = new Url($this->baseApiUri);
 
-    public function initialize()
-    {
-    }
+		$this->initialize();
+	}
 
-    public function getBaseApiUri($clone = true)
-    {
-        if (null === $this->baseApiUri) {
-            throw new Exception(
-                'An absolute URI must be passed to ServiceInterface::request as no baseApiUri is set.'
-            );
-        }
+	public function initialize()
+	{
 
-        return !$clone ? $this->baseApiUri : clone $this->baseApiUri;
-    }
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthorizationEndpoint()
-    {
-        if (!$this->authorizationEndpoint) {
-            throw new Exception('Authorization endpoint isn\'t defined!');
-        }
+	public function getBaseApiUri($clone = TRUE)
+	{
+		if (NULL === $this->baseApiUri)
+		{
+			throw new Exception(
+				'An absolute URI must be passed to ServiceInterface::request as no baseApiUri is set.'
+			);
+		}
 
-        return new Url($this->authorizationEndpoint);
-    }
+		return !$clone ? $this->baseApiUri : clone $this->baseApiUri;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAccessTokenEndpoint()
-    {
-        if (!$this->accessTokenEndpoint) {
-            throw new Exception('Access token endpoint isn\'t defined!');
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getAuthorizationEndpoint()
+	{
+		if (!$this->authorizationEndpoint) throw new Exception('Authorization endpoint isn\'t defined!');
 
-        return new Url($this->accessTokenEndpoint);
-    }
+		return new Url($this->authorizationEndpoint);
+	}
 
-    /**
-     * @param Url|string $path
-     *
-     * @return Url
-     * @throws Exception
-     */
-    public function determineRequestUriFromPath($path)
-    {
-        if ($path instanceof Url) {
-            $uri = $path;
-        } elseif (stripos($path, 'http://') === 0 || stripos($path, 'https://') === 0) {
-            $uri = new Url($path);
-        } else {
-            $path = (string) $path;
-            $uri = $this->getBaseApiUri();
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getAccessTokenEndpoint()
+	{
+		if (!$this->accessTokenEndpoint) throw new Exception('Access token endpoint isn\'t defined!');
 
-            if (false !== strpos($path, '?')) {
-                $parts = explode('?', $path, 2);
-                $path = $parts[ 0 ];
-                $query = $parts[ 1 ];
-                $uri->setQuery($query);
-            }
+		return new Url($this->accessTokenEndpoint);
+	}
 
-            // Add path
-            $uri->getPath()->append("$path");
+	/**
+	 * @param Url|string $path
+	 * @return Url
+	 * @throws Exception
+	 */
+	protected function determineRequestUriFromPath($path)
+	{
+		if ($path instanceof Url)
+		{
+			$uri = $path;
+		}
+		elseif (stripos($path, 'http://') === 0 || stripos($path, 'https://') === 0)
+		{
+			$uri = new Url($path);
+		}
+		else
+		{
+			$path = (string) $path;
+			$uri  = $this->getBaseApiUri();
 
-            // Clean up double slashes
-            $uri->setPath(array_filter($uri->getPath()->toArray()));
-        }
+			if (FALSE !== strpos($path, '?'))
+			{
+				$parts = explode('?', $path, 2);
+				$path  = $parts[ 0 ];
+				$query = $parts[ 1 ];
+				$uri->setQuery($query);
+			}
 
-        return $uri;
-    }
+			if ($path[ 0 ] === '/')
+			{
+				$path = substr($path, 1);
+			}
 
-    /**
-     * Accessor to the storage adapter to be able to retrieve tokens
-     *
-     * @return TokenStorageInterface
-     */
-    public function getStorage()
-    {
-        return $this->storage;
-    }
+			$uri->setPath($uri->getPath() . '/' . $path);
+		}
 
-    /**
-     * Accessor to the storage adapter to be able to make request
-     *
-     * @return ClientInterface
-     */
-    public function getHTTPTransporter()
-    {
-        return $this->httpTransporter;
-    }
+		return $uri;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requestJSON($uri, array $body = [], $method = 'GET', array $extraHeaders = [])
-    {
-        $json = $this->request($uri, $body, $method, $extraHeaders);
-        if (!is_string($json) or (
-                0 !== strpos($json, '{') and
-                !in_array($json, ['true', 'false'])
-            )
-        ) {
-            throw new Exception('Wrong JSON! Got - ' . $json);
-        }
+	/**
+	 * Accessor to the storage adapter to be able to retrieve tokens
+	 *
+	 * @return TokenStorageInterface
+	 */
+	public function getStorage()
+	{
+		return $this->storage;
+	}
 
-        return json_decode($json, true);
-    }
+	/**
+	 * Accessor to the storage adapter to be able to make request
+	 *
+	 * @return ClientInterface
+	 */
+	public function getHTTPTransporter()
+	{
+		return $this->httpTransporter;
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function httpRequest($uri, array $body = [], array $headers = [], $method = 'POST')
-    {
-        try {
-            $response = $this->httpTransporter->submit($uri, $body, $method, $headers);
-        } catch (RequestException $e) {
-            throw new TokenResponseException($e->getMessage() ? $e->getMessage() : 'Failed to request resource.');
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function requestJSON($uri, array $body = [], $method = 'GET', array $extraHeaders = [])
+	{
+		return json_decode($this->request($uri, $body, $method, $extraHeaders), TRUE);
+	}
 
-        return $response->getContent();
-    }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function httpRequest($uri, array $body = [], array $headers = [], $method = 'POST')
+	{
+		try
+		{
+			$response = $this->httpTransporter->submit($uri, $body, $method, $headers);
+		} catch (RequestException $e)
+		{
+			throw new TokenResponseException($e->getMessage() ? $e->getMessage() : 'Failed to request resource.');
+		}
 
-    /**
-     * @return string
-     */
-    public function service()
-    {
-        // get class name without backslashes
-        return preg_replace('/^.*\\\\/', '', get_class($this));
-    }
+		return $response->getContent();
+	}
 
-    /**
-     * Get _POST + _GET
-     *
-     * @return array
-     */
-    protected function getGlobalRequestArguments()
-    {
-        return array_merge($_GET, (!empty($_POST) ? $_POST : []));
-    }
+	/**
+	 * @return string
+	 */
+	public function service()
+	{
+		// get class name without backslashes
+		return preg_replace('/^.*\\\\/', '', get_class($this));
+	}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function constructExtractor(ExtractorFactoryInterface $extractorFactory = null)
-    {
-        if (!$extractorFactory) {
-            if (!self::$extractorFactory) {
-                self::$extractorFactory = new ExtractorFactory();
-            }
+	/**
+	 * Get _POST + _GET
+	 *
+	 * @return array
+	 */
+	protected function getGlobalRequestArguments()
+	{
+		return array_merge($_GET, (!empty($_POST) ? $_POST : []));
+	}
 
-            $extractorFactory = self::$extractorFactory;
-        }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function constructExtractor(ExtractorFactoryInterface $extractorFactory = NULL)
+	{
+		if (!$extractorFactory)
+		{
+			if (!self::$extractorFactory) self::$extractorFactory = new ExtractorFactory();
 
-        return $extractorFactory->get($this);
-    }
+			$extractorFactory = self::$extractorFactory;
+		}
 
-    /**
-     * {@inheritdoc}
-     */
-    public function redirectToAuthorizationUri()
-    {
-        $url = $this->getAuthorizationUri();
-        header('Location: ' . $url, true);
+		return $extractorFactory->get($this);
+	}
 
-        return $this;
-    }
+	/**
+	 * {@inheritdoc}
+	 */
+	public function redirectToAuthorizationUri()
+	{
+		$url = $this->getAuthorizationUri();
+		header('Location: ' . $url, TRUE);
+
+		return $this;
+	}
 }

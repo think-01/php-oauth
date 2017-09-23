@@ -6,10 +6,9 @@ use OAuth\OAuth1\Service\Xing;
 
 class XingTest extends \PHPUnit_Framework_TestCase
 {
-
     private $client;
     private $storage;
-
+    
     /** @var Xing|\PHPUnit_Framework_MockObject_MockObject */
     private $xing;
 
@@ -21,16 +20,12 @@ class XingTest extends \PHPUnit_Framework_TestCase
         $this->client = $this->getMock('\\Buzz\\Browser');
         $this->storage = $this->getMock('\\OAuth\\Common\\Storage\\TokenStorageInterface');
 
-        $this->xing = $this->getMock(
-            '\\OAuth\\OAuth1\\Service\\Xing',
-            ['httpRequest'],
-            [
-                $this->getMock('\\OAuth\\Common\\Consumer\\CredentialsInterface'),
-                $this->getMock('\\Buzz\\Browser'),
-                $this->storage,
-                $this->getMock('\\OAuth\\OAuth1\\Signature\\SignatureInterface')
-            ]
-        );
+        $this->xing = $this->getMock('\\OAuth\\OAuth1\\Service\\Xing', ['httpRequest'], [
+            $this->getMock('\\OAuth\\Common\\Consumer\\CredentialsInterface'),
+            $this->getMock('\\Buzz\\Browser'),
+            $this->storage,
+            $this->getMock('\\OAuth\\OAuth1\\Signature\\SignatureInterface')
+        ]);
     }
 
     /**
@@ -39,8 +34,7 @@ class XingTest extends \PHPUnit_Framework_TestCase
     public function testConstructCorrectInterfaceWithoutCustomUri()
     {
         $this->assertInstanceOf(
-            '\\OAuth\\OAuth1\\Service\\ServiceInterface',
-            $this->xing
+            '\\OAuth\\OAuth1\\Service\\ServiceInterface', $this->xing
         );
     }
 
@@ -50,8 +44,7 @@ class XingTest extends \PHPUnit_Framework_TestCase
     public function testConstructCorrectInstanceWithoutCustomUri()
     {
         $this->assertInstanceOf(
-            '\\OAuth\\OAuth1\\Service\\AbstractService',
-            $this->xing
+            '\\OAuth\\OAuth1\\Service\\AbstractService', $this->xing
         );
     }
 
@@ -186,11 +179,9 @@ class XingTest extends \PHPUnit_Framework_TestCase
         $this->xing
             ->expects($this->once())
             ->method('httpRequest')
-            ->will(
-                $this->returnValue(
-                    'oauth_callback_confirmed=true&oauth_token=foo&oauth_token_secret=bar'
-                )
-            );
+            ->will($this->returnValue(
+                'oauth_callback_confirmed=true&oauth_token=foo&oauth_token_secret=bar'
+            ));
 
         $this->assertInstanceOf(
             '\\OAuth\\OAuth1\\Token\\StdOAuth1Token',

@@ -9,9 +9,8 @@ use OAuth\UserData\Extractor\Instagram;
  */
 class InstagramTest extends \PHPUnit_Framework_TestCase
 {
-
     const PROFILE_RESPONSE =
-        '{
+'{
   "meta":  {
     "code": 200
   },
@@ -49,7 +48,7 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
         $service->expects($this->any())
             ->method('requestJSON')
             ->with(Instagram::REQUEST_PROFILE)
-            ->willReturn(json_decode(InstagramTest::PROFILE_RESPONSE, true));
+            ->willReturn(json_decode(InstagramTest::PROFILE_RESPONSE, TRUE));
         /**
          * @var \OAuth\Common\Service\ServiceInterface $service
          */
@@ -114,10 +113,7 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
 
     public function testGetImageUrl()
     {
-        $this->assertEquals(
-            'http://images.ak.instagram.com/profiles/profile_weird_numbers.jpg',
-            $this->extractor->getImageUrl()
-        );
+        $this->assertEquals('http://images.ak.instagram.com/profiles/profile_weird_numbers.jpg', $this->extractor->getImageUrl());
     }
 
     public function testGetProfileUrl()
@@ -127,9 +123,9 @@ class InstagramTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWebsites()
     {
-        $expected = [
+        $expected = array(
             'http://blog.johnnydonny.com'
-        ];
+        );
         $this->assertEquals($expected, $this->extractor->getWebsites());
     }
 

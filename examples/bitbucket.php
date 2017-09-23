@@ -4,7 +4,6 @@
  * Example of retrieving an authentication token from the BitBucket service
  *
  * PHP version 5.4
- *
  * @author     And <and.webdev@gmail.com>
  * @author     Ændrew Rininsland <me@aendrew.com>
  *
@@ -15,9 +14,9 @@
  * @license    http://www.opensource.org/licenses/mit-license.html  MIT License
  */
 
-use OAuth\Common\Consumer\Credentials;
-use OAuth\Common\Storage\Session;
 use OAuth\OAuth1\Service\BitBucket;
+use OAuth\Common\Storage\Session;
+use OAuth\Common\Consumer\Credentials;
 
 /**
  * Bootstrap the example
@@ -30,8 +29,8 @@ $storage = new Session();
 
 // Setup the credentials for the requests
 $credentials = new Credentials(
-    $servicesCredentials[ 'bitbucket' ][ 'key' ],
-    $servicesCredentials[ 'bitbucket' ][ 'secret' ],
+    $servicesCredentials['bitbucket']['key'],
+    $servicesCredentials['bitbucket']['secret'],
     $currentUri
 );
 
@@ -40,11 +39,12 @@ $credentials = new Credentials(
 $bbService = $serviceFactory->createService('BitBucket', $credentials, $storage);
 
 if ($bbService->isGlobalRequestArgumentsPassed()) {
-    $result = $bbService->retrieveAccessTokenByGlobReqArgs()->requestJSON('user/repositories');
+	$result = $bbService->retrieveAccessTokenByGlobReqArgs()->requestJSON('user/repositories');
 
-    echo('The first repo in the list is ' . $result[ 0 ][ 'name' ]);
-} elseif (!empty($_GET[ 'go' ]) && $_GET[ 'go' ] === 'go') {
-    $bbService->redirectToAuthorizationUri();
+	echo('The first repo in the list is ' . $result[0]['name']);
+
+} elseif (!empty($_GET['go']) && $_GET['go'] === 'go') {
+	$bbService->redirectToAuthorizationUri();
 } else {
-    echo "<a href='$currentUri?go=go'>Login with BitBucket!</a>";
+	echo "<a href='$currentUri?go=go'>Login with BitBucket!</a>";
 }

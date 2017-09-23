@@ -11,11 +11,10 @@
 
 namespace OAuth\Unit\Common\Storage;
 
-use OAuth\OAuth2\Token\StdOAuth2Token;
+use \OAuth\OAuth2\Token\StdOAuth2Token;
 
 abstract class StorageTest extends \PHPUnit_Framework_TestCase
 {
-
     protected $storage;
 
     /**
@@ -27,8 +26,8 @@ abstract class StorageTest extends \PHPUnit_Framework_TestCase
         $service_1 = 'Facebook';
         $service_2 = 'Foursquare';
 
-        $token_1 = new StdOAuth2Token('access_1', 'refresh_1', StdOAuth2Token::EOL_NEVER_EXPIRES, ['extra' => 'param']);
-        $token_2 = new StdOAuth2Token('access_2', 'refresh_2', StdOAuth2Token::EOL_NEVER_EXPIRES, ['extra' => 'param']);
+        $token_1 = new StdOAuth2Token('access_1', 'refresh_1', StdOAuth2Token::EOL_NEVER_EXPIRES, array('extra' => 'param'));
+        $token_2 = new StdOAuth2Token('access_2', 'refresh_2', StdOAuth2Token::EOL_NEVER_EXPIRES, array('extra' => 'param'));
 
         // act
         $this->storage->storeAccessToken($service_1, $token_1);
@@ -36,7 +35,7 @@ abstract class StorageTest extends \PHPUnit_Framework_TestCase
 
         // assert
         $extraParams = $this->storage->retrieveAccessToken($service_1)->getExtraParams();
-        $this->assertEquals('param', $extraParams[ 'extra' ]);
+        $this->assertEquals('param', $extraParams['extra']);
         $this->assertEquals($token_1, $this->storage->retrieveAccessToken($service_1));
         $this->assertEquals($token_2, $this->storage->retrieveAccessToken($service_2));
     }
@@ -62,7 +61,7 @@ abstract class StorageTest extends \PHPUnit_Framework_TestCase
     {
         // arrange
         $service = 'Facebook';
-        $token = new StdOAuth2Token('access', 'refresh', StdOAuth2Token::EOL_NEVER_EXPIRES, ['extra' => 'param']);
+        $token = new StdOAuth2Token('access', 'refresh', StdOAuth2Token::EOL_NEVER_EXPIRES, array('extra' => 'param'));
 
         // act
         $this->storage->storeAccessToken($service, $token);

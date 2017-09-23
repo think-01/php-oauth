@@ -9,29 +9,32 @@ use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\OAuth1\Service\AbstractService;
 use OAuth\OAuth1\Signature\SignatureInterface;
 
-class Fake extends AbstractService
-{
+class Fake extends AbstractService {
 
-    public function __construct(
-        CredentialsInterface $credentials,
-        Browser $httpTransporter,
-        TokenStorageInterface $storage,
-        SignatureInterface $signature,
-        Url $baseApiUri = null
-    ) {
-    }
+	public function __construct(
+		CredentialsInterface $credentials,
+		Browser $httpTransporter,
+		TokenStorageInterface $storage,
+		SignatureInterface $signature,
+		Url $baseApiUri = NULL
+	)
+	{
 
-    /**
-     * {inheritDoc}
-     */
-    protected function parseRequestTokenResponse($responseBody)
-    {
-    }
+	}
 
-    /**
-     * {inheritDoc}
-     */
-    protected function parseAccessTokenResponse($responseBody)
-    {
-    }
+	/**
+	 * {inheritDoc}
+	 */
+	protected function parseRequestTokenResponse($responseBody)
+	{
+
+	}
+
+	/**
+	 * {inheritDoc}
+	 */
+	protected function parseAccessTokenResponse($responseBody)
+	{
+
+	}
 }

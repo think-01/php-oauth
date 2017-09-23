@@ -8,9 +8,8 @@ use OAuth\UserData\Extractor\Twitter;
  */
 class TwitterTest extends \PHPUnit_Framework_TestCase
 {
-
     const PROFILE_RESPONSE =
-        '{
+'{
   "name": "Matt Harris",
   "profile_sidebar_border_color": "C0DEED",
   "profile_background_tile": false,
@@ -101,7 +100,7 @@ class TwitterTest extends \PHPUnit_Framework_TestCase
         $service->expects($this->any())
             ->method('requestJSON')
             ->with(Twitter::REQUEST_PROFILE)
-            ->willReturn(json_decode(TwitterTest::PROFILE_RESPONSE, true));
+            ->willReturn(json_decode(TwitterTest::PROFILE_RESPONSE, TRUE));
         /**
          * @var \OAuth\Common\Service\ServiceInterface $service
          */
@@ -170,10 +169,10 @@ class TwitterTest extends \PHPUnit_Framework_TestCase
 
     public function testGetWebsites()
     {
-        $websites = [
+        $websites = array(
             'http://themattharris.com',
             'http://dev.twitter.com'
-        ];
+        );
         $this->assertEquals($websites, $this->extractor->getWebsites());
     }
 

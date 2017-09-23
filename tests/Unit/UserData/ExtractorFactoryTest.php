@@ -9,7 +9,6 @@ use OAuth\UserData\ExtractorFactory;
  */
 class ExtractorFactoryTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var ExtractorFactory
      */
@@ -48,7 +47,7 @@ class ExtractorFactoryTest extends \PHPUnit_Framework_TestCase
         /**
          * @var \Oauth\Common\Service\ServiceInterface $service
          */
-        $service = $this->getMock('\\OAuth\\Common\\Service\\ServiceInterface', [], [], 'FakeService');
+        $service = $this->getMock('\\OAuth\\Common\\Service\\ServiceInterface', array(), array(), 'FakeService');
         $this->factory->addExtractorMapping('FakeService', '\\OAuth\\UserData\\Extractor\\Facebook');
         $extractor = $this->factory->get($service);
         $this->assertInstanceOf('\\OAuth\\UserData\\Extractor\\Facebook', $extractor);
@@ -62,7 +61,7 @@ class ExtractorFactoryTest extends \PHPUnit_Framework_TestCase
         /**
          * @var \Oauth\Common\Service\ServiceInterface $service
          */
-        $service = $this->getMock('\\OAuth\\OAuth2\\Service\\Facebook', [], [], 'Facebook', false);
+        $service = $this->getMock('\\OAuth\\OAuth2\\Service\\Facebook', array(), array(), 'Facebook', false);
         $extractor = $this->factory->get($service);
         $this->assertInstanceOf('\\OAuth\\UserData\\Extractor\\Facebook', $extractor);
     }
@@ -77,22 +76,21 @@ class ExtractorFactoryTest extends \PHPUnit_Framework_TestCase
         /**
          * @var \Oauth\Common\Service\ServiceInterface $service
          */
-        $service = $this->getMock('\\OAuth\\Common\\Service\\ServiceInterface', [], [], 'FakeService');
+        $service = $this->getMock('\\OAuth\\Common\\Service\\ServiceInterface', array(), array(), 'FakeService');
         $this->factory->get($service);
     }
 
     /**
      * @covers \OAuth\UserData\ExtractorFactory
      * @expectedException \OAuth\UserData\Exception\InvalidExtractorException
-     * @expectedExceptionMessage The class "stdClass" does not implement the interface
-     *     OAuth\UserData\Extractor\ExtractorInterface
+     * @expectedExceptionMessage The class "stdClass" does not implement the interface OAuth\UserData\Extractor\ExtractorInterface
      */
     public function testGetThrowsInvalidExtractorException()
     {
         /**
          * @var \Oauth\Common\Service\ServiceInterface $service
          */
-        $service = $this->getMock('\\OAuth\\Common\\Service\\ServiceInterface', [], [], 'FakeService');
+        $service = $this->getMock('\\OAuth\\Common\\Service\\ServiceInterface', array(), array(), 'FakeService');
         $this->factory->addExtractorMapping('FakeService', 'stdClass');
         $this->factory->get($service);
     }
