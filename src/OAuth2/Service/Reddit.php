@@ -90,4 +90,11 @@ class Reddit extends AbstractService {
 				base64_encode($this->credentials->getConsumerId() . ':' . $this->credentials->getConsumerSecret())
 		];
 	}
+
+	protected function getExtraApiHeaders()
+	{
+		return array(
+			'User-Agent' => 'web:localrekt:v1.0.0'
+		);
+	}
 }
