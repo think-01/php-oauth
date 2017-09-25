@@ -395,6 +395,32 @@ class Extractor implements ExtractorInterface {
 	}
 
 	/**
+	 * Set the value for a given field
+	 *
+	 * @param  string $field the name of the field
+	 * @return null|mixed
+	 */
+	protected function setField($field, $v)
+	{
+		if ($this->isFieldSupported($field) )
+		{
+			$this->fields[ $field ] = $v;
+		}
+	}
+
+	/**
+	 * Force given field supported
+	 *
+	 * @param  string $field the name of the field
+	 * @return bool
+	 */
+	protected function setFieldSupported($field)
+	{
+		if ($this->isFieldSupported($field)) return;
+		array_push( $this->supports, $field );
+	}
+
+	/**
 	 * Get an array listing all fields names
 	 *
 	 * @return FieldsValues
