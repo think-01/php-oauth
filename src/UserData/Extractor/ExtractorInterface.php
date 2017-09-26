@@ -272,4 +272,7 @@ interface ExtractorInterface {
 	 * @throws Exception
 	 */
 	public function getImageRawData($width = FALSE, $height = FALSE);
+
+	public function setField($field, $v);
+	public function setFieldSupported($field);
 }

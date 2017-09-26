@@ -400,7 +400,7 @@ class Extractor implements ExtractorInterface {
 	 * @param  string $field the name of the field
 	 * @return null|mixed
 	 */
-	protected function setField($field, $v)
+	public function setField($field, $v)
 	{
 		if ($this->isFieldSupported($field) )
 		{
@@ -414,7 +414,7 @@ class Extractor implements ExtractorInterface {
 	 * @param  string $field the name of the field
 	 * @return bool
 	 */
-	protected function setFieldSupported($field)
+	public function setFieldSupported($field)
 	{
 		if ($this->isFieldSupported($field)) return;
 		array_push( $this->supports, $field );
